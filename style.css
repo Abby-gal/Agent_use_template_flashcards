@@ -1,0 +1,14 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+}
+
+.page {
+	width: min(100% - 32px, 600px);
+	min-height: 100vh;
+	margin: 0 auto;
+}
