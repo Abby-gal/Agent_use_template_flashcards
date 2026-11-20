@@ -33,3 +33,11 @@ body {
 	border: 0;
 	cursor: pointer;
 }
+
+#word-list-section {
+	margin-top: 24px;
+}
+
+#word-list {
+	padding-left: 20px;
+}
