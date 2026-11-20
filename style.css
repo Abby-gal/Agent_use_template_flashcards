@@ -41,3 +41,13 @@ body {
 #word-list {
 	padding-left: 20px;
 }
+
+#word-list li {
+	margin-bottom: 8px;
+}
+
+#word-list button {
+	margin-left: 10px;
+	padding: 4px 8px;
+	cursor: pointer;
+}

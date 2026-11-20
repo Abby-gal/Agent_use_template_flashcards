@@ -29,9 +29,25 @@ wordForm.addEventListener("submit", addWordPair);
 function showWordPairs() {
 	wordList.textContent = "";
 
-	for (const pair of flashcards) {
+	for (let index = 0; index < flashcards.length; index++) {
+		const pair = flashcards[index];
 		const listItem = document.createElement("li");
+		const deleteButton = document.createElement("button");
+
 		listItem.textContent = pair.english + " — " + pair.german;
+		deleteButton.textContent = "Delete";
+		deleteButton.type = "button";
+		deleteButton.addEventListener("click", function () {
+			deleteWordPair(index);
+		});
+
+		listItem.appendChild(deleteButton);
 		wordList.appendChild(listItem);
 	}
+}
+
+// Removes a word pair at the selected position in the list.
+function deleteWordPair(index) {
+	flashcards.splice(index, 1);
+	showWordPairs();
 }
