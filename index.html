@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Balance Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Life Balance Planner</h1>
+    </header>
+
+    <main>
+        <section class="activity-section">
+            <h2>Add activity</h2>
+
+            <form id="activity-form">
+                <label for="activity-name">Name</label>
+                <input type="text" id="activity-name" name="activityName" required>
+
+                <label for="activity-category">Category</label>
+                <select id="activity-category" name="activityCategory" required>
+                    <option value="">Select category</option>
+                </select>
+
+                <label for="activity-date">Date</label>
+                <input type="date" id="activity-date" name="activityDate" required>
+
+                <label for="planned-start">Planned start</label>
+                <input type="time" id="planned-start" name="plannedStart" required>
+
+                <label for="planned-end">Planned end</label>
+                <input type="time" id="planned-end" name="plannedEnd" required>
+
+                <button type="submit">Add activity</button>
+            </form>
+        </section>
+
+        <section class="week-section">
+            <h2>Weekly timetable</h2>
+
+            <label for="selected-week">Week</label>
+            <input type="week" id="selected-week" name="selectedWeek">
+
+            <div id="timetable" aria-label="Weekly timetable"></div>
+        </section>
+
+        <section class="summary-section">
+            <h2>Weekly hours</h2>
+            <div id="hours-summary"></div>
+        </section>
+
+        <section class="targets-section">
+            <h2>Weekly targets</h2>
+
+            <form id="targets-form">
+                <label for="work-limit">Work maximum</label>
+                <input type="number" id="work-limit" name="workLimit" min="0" step="0.5">
+
+                <label for="responsibility-limit">Work, study and church maximum</label>
+                <input type="number" id="responsibility-limit" name="responsibilityLimit" min="0" step="0.5">
+
+                <label for="exercise-goal">Exercise goal</label>
+                <input type="number" id="exercise-goal" name="exerciseGoal" min="0" step="0.5">
+
+                <label for="rest-minimum">Personal or rest minimum</label>
+                <input type="number" id="rest-minimum" name="restMinimum" min="0" step="0.5">
+
+                <button type="submit">Update targets</button>
+            </form>
+        </section>
+
+        <section class="warnings-section">
+            <h2>Warnings</h2>
+            <div id="warnings"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
