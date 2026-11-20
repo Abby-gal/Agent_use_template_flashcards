@@ -11,4 +11,25 @@ body {
 	width: min(100% - 32px, 600px);
 	min-height: 100vh;
 	margin: 0 auto;
+	padding-top: 24px;
+}
+
+#word-form {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+#word-form input,
+#word-form button {
+	font-size: 16px;
+	padding: 10px;
+}
+
+#word-form button {
+	margin-top: 8px;
+	color: white;
+	background-color: #2563eb;
+	border: 0;
+	cursor: pointer;
 }
