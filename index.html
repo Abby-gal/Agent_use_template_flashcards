@@ -22,6 +22,11 @@
                 <label for="activity-category">Category</label>
                 <select id="activity-category" name="activityCategory" required>
                     <option value="">Select category</option>
+                    <option value="work">Work</option>
+                    <option value="study">Study</option>
+                    <option value="church">Church</option>
+                    <option value="exercise">Exercise</option>
+                    <option value="personal">Personal or rest</option>
                 </select>
 
                 <label for="activity-date">Date</label>
@@ -35,6 +40,7 @@
 
                 <button type="submit">Add activity</button>
             </form>
+            <p id="activity-message" role="status"></p>
         </section>
 
         <section class="week-section">
