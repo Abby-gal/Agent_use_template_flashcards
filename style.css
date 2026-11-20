@@ -58,7 +58,63 @@ button {
     cursor: pointer;
 }
 
-#timetable,
+#timetable {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(120px, 1fr));
+    gap: 8px;
+    overflow-x: auto;
+}
+
+.timetable-day {
+    min-height: 180px;
+    padding: 8px;
+    border: 1px solid #d8dee4;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+.timetable-day h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.empty-slot {
+    color: #6b7280;
+}
+
+.activity-item {
+    margin-bottom: 6px;
+    padding: 7px;
+    border-left: 5px solid #6b7280;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.activity-item.work {
+    background-color: #fee2e2;
+    border-left-color: #dc2626;
+}
+
+.activity-item.study {
+    background-color: #dbeafe;
+    border-left-color: #2563eb;
+}
+
+.activity-item.church {
+    background-color: #ede9fe;
+    border-left-color: #7c3aed;
+}
+
+.activity-item.exercise {
+    background-color: #dcfce7;
+    border-left-color: #16a34a;
+}
+
+.activity-item.personal {
+    background-color: #fef3c7;
+    border-left-color: #d97706;
+}
+
 #hours-summary,
 #warnings {
     min-height: 80px;
