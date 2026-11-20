@@ -115,6 +115,13 @@ button {
     border-left-color: #d97706;
 }
 
+.delete-activity {
+    display: block;
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
 #hours-summary,
 #warnings {
     min-height: 80px;

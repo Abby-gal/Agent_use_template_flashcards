@@ -85,6 +85,14 @@ function handleActivitySubmit(event) {
     renderTimetable();
 }
 
+// Remove an activity from local storage using its position in the saved list.
+function deleteActivity(activityIndex) {
+    let activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    activities.splice(activityIndex, 1);
+    localStorage.setItem("lifeBalanceActivities", JSON.stringify(activities));
+    renderTimetable();
+}
+
 // Render one day's activities inside the weekly timetable.
 function renderDay(day, monday, timetable) {
     const date = new Date(monday);
@@ -123,8 +131,22 @@ function renderDay(day, monday, timetable) {
         activityElement.className = "activity-item " + activity.category;
 
         const categoryLabel = activity.category.charAt(0).toUpperCase() + activity.category.slice(1);
-        activityElement.textContent = activity.plannedStart + "-" + activity.plannedEnd + " " +
+        const activityText = document.createElement("span");
+        activityText.textContent = activity.plannedStart + "-" + activity.plannedEnd + " " +
             activity.name + " (" + categoryLabel + ")";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-activity";
+        deleteButton.textContent = "Delete";
+
+        const activityIndex = activities.indexOf(activity);
+        deleteButton.addEventListener("click", function() {
+            deleteActivity(activityIndex);
+        });
+
+        activityElement.appendChild(activityText);
+        activityElement.appendChild(deleteButton);
         dayElement.appendChild(activityElement);
     });
 
