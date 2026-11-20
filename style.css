@@ -134,3 +134,21 @@ button {
     min-height: 20px;
     color: #3a4a5a;
 }
+
+.actual-time {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.submit-actual-times {
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.actual-message {
+    min-height: 16px;
+    margin-top: 4px;
+    color: #3a4a5a;
+}

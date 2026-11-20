@@ -93,6 +93,31 @@ function deleteActivity(activityIndex) {
     renderTimetable();
 }
 
+// Save actual start and end times for an activity.
+function handleActualSubmit(event, activityIndex) {
+    event.preventDefault();
+
+    const actualStart = document.getElementById("actual-start-" + activityIndex).value;
+    const actualEnd = document.getElementById("actual-end-" + activityIndex).value;
+
+    if (actualStart === "" || actualEnd === "") {
+        document.getElementById("actual-message-" + activityIndex).textContent = "Please enter both actual times.";
+        return;
+    }
+
+    if (timeToMinutes(actualEnd) <= timeToMinutes(actualStart)) {
+        document.getElementById("actual-message-" + activityIndex).textContent = "Actual end time must be after actual start time.";
+        return;
+    }
+
+    let activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    activities[activityIndex].actualStart = actualStart;
+    activities[activityIndex].actualEnd = actualEnd;
+    localStorage.setItem("lifeBalanceActivities", JSON.stringify(activities));
+
+    document.getElementById("actual-message-" + activityIndex).textContent = "Actual times saved.";
+}
+
 // Render one day's activities inside the weekly timetable.
 function renderDay(day, monday, timetable) {
     const date = new Date(monday);
@@ -135,18 +160,47 @@ function renderDay(day, monday, timetable) {
         activityText.textContent = activity.plannedStart + "-" + activity.plannedEnd + " " +
             activity.name + " (" + categoryLabel + ")";
 
+        const activityIndex = activities.indexOf(activity);
+
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.className = "delete-activity";
         deleteButton.textContent = "Delete";
 
-        const activityIndex = activities.indexOf(activity);
         deleteButton.addEventListener("click", function() {
             deleteActivity(activityIndex);
         });
 
+        const actualStartInput = document.createElement("input");
+        actualStartInput.type = "time";
+        actualStartInput.id = "actual-start-" + activityIndex;
+        actualStartInput.className = "actual-time";
+        actualStartInput.value = activity.actualStart || "";
+
+        const actualEndInput = document.createElement("input");
+        actualEndInput.type = "time";
+        actualEndInput.id = "actual-end-" + activityIndex;
+        actualEndInput.className = "actual-time";
+        actualEndInput.value = activity.actualEnd || "";
+
+        const actualMessage = document.createElement("div");
+        actualMessage.id = "actual-message-" + activityIndex;
+        actualMessage.className = "actual-message";
+
+        const actualSubmitButton = document.createElement("button");
+        actualSubmitButton.type = "button";
+        actualSubmitButton.className = "submit-actual-times";
+        actualSubmitButton.textContent = "Save Actual Times";
+        actualSubmitButton.addEventListener("click", function(event) {
+            handleActualSubmit(event, activityIndex);
+        });
+
         activityElement.appendChild(activityText);
         activityElement.appendChild(deleteButton);
+        activityElement.appendChild(actualStartInput);
+        activityElement.appendChild(actualEndInput);
+        activityElement.appendChild(actualMessage);
+        activityElement.appendChild(actualSubmitButton);
         dayElement.appendChild(activityElement);
     });
 
