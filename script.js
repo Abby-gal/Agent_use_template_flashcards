@@ -1,9 +1,26 @@
-const flashcards = [];
+const storageKey = "flashcards";
+let flashcards = loadWordPairs();
 
 const wordForm = document.getElementById("word-form");
 const englishWord = document.getElementById("english-word");
 const germanWord = document.getElementById("german-word");
 const wordList = document.getElementById("word-list");
+
+// Loads saved word pairs from the browser storage.
+function loadWordPairs() {
+	const savedPairs = localStorage.getItem(storageKey);
+
+	if (savedPairs === null) {
+		return [];
+	}
+
+	return JSON.parse(savedPairs);
+}
+
+// Saves all current word pairs in the browser storage.
+function saveWordPairs() {
+	localStorage.setItem(storageKey, JSON.stringify(flashcards));
+}
 
 // Adds a submitted word pair and clears the two input fields.
 function addWordPair(event) {
@@ -20,6 +37,7 @@ function addWordPair(event) {
 	englishWord.value = "";
 	germanWord.value = "";
 
+	saveWordPairs();
 	showWordPairs();
 }
 
@@ -49,5 +67,8 @@ function showWordPairs() {
 // Removes a word pair at the selected position in the list.
 function deleteWordPair(index) {
 	flashcards.splice(index, 1);
+	saveWordPairs();
 	showWordPairs();
 }
+
+showWordPairs();
