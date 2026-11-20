@@ -7,8 +7,11 @@ const germanWord = document.getElementById("german-word");
 const wordList = document.getElementById("word-list");
 const flashcard = document.getElementById("flashcard");
 const nextCard = document.getElementById("next-card");
+const knewItCard = document.getElementById("knew-it-card");
+const knewItCount = document.getElementById("knew-it-count");
 let currentCardIndex = 0;
 let isTranslationShown = false;
+let knownCardCount = 0;
 
 // Loads saved word pairs from the browser storage.
 function loadWordPairs() {
@@ -128,6 +131,18 @@ function showRandomCard() {
 	isTranslationShown = false;
 	showCurrentCard();
 }
+
+// Increments the known card count and updates the display.
+function markCardAsKnown() {
+	if (flashcards.length === 0) {
+		return;
+	}
+
+	knownCardCount = knownCardCount + 1;
+	knewItCount.textContent = "Known in this session: " + knownCardCount;
+}
+
+knewItCard.addEventListener("click", markCardAsKnown);
 
 nextCard.addEventListener("click", showRandomCard);
 
