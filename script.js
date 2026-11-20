@@ -6,6 +6,7 @@ const englishWord = document.getElementById("english-word");
 const germanWord = document.getElementById("german-word");
 const wordList = document.getElementById("word-list");
 const flashcard = document.getElementById("flashcard");
+const nextCard = document.getElementById("next-card");
 let currentCardIndex = 0;
 let isTranslationShown = false;
 
@@ -110,6 +111,25 @@ function revealFlashcard() {
 }
 
 flashcard.addEventListener("click", revealFlashcard);
+
+// Selects and shows a random card different from the current card.
+function showRandomCard() {
+	if (flashcards.length < 2) {
+		return;
+	}
+
+	let newIndex;
+
+	do {
+		newIndex = Math.floor(Math.random() * flashcards.length);
+	} while (newIndex === currentCardIndex);
+
+	currentCardIndex = newIndex;
+	isTranslationShown = false;
+	showCurrentCard();
+}
+
+nextCard.addEventListener("click", showRandomCard);
 
 showWordPairs();
 showCurrentCard();
