@@ -5,6 +5,9 @@ const wordForm = document.getElementById("word-form");
 const englishWord = document.getElementById("english-word");
 const germanWord = document.getElementById("german-word");
 const wordList = document.getElementById("word-list");
+const flashcard = document.getElementById("flashcard");
+let currentCardIndex = 0;
+let isTranslationShown = false;
 
 // Loads saved word pairs from the browser storage.
 function loadWordPairs() {
@@ -34,11 +37,13 @@ function addWordPair(event) {
 	}
 
 	flashcards.push({ english: english, german: german });
+	isTranslationShown = false;
 	englishWord.value = "";
 	germanWord.value = "";
 
 	saveWordPairs();
 	showWordPairs();
+	showCurrentCard();
 }
 
 wordForm.addEventListener("submit", addWordPair);
@@ -67,8 +72,44 @@ function showWordPairs() {
 // Removes a word pair at the selected position in the list.
 function deleteWordPair(index) {
 	flashcards.splice(index, 1);
+
+	if (currentCardIndex >= flashcards.length) {
+		currentCardIndex = 0;
+	}
+
+	isTranslationShown = false;
 	saveWordPairs();
 	showWordPairs();
+	showCurrentCard();
 }
 
+// Shows the English word or German translation on the current card.
+function showCurrentCard() {
+	if (flashcards.length === 0) {
+		flashcard.textContent = "Add a word pair to start";
+		return;
+	}
+
+	const pair = flashcards[currentCardIndex];
+
+	if (isTranslationShown) {
+		flashcard.textContent = pair.german;
+	} else {
+		flashcard.textContent = pair.english;
+	}
+}
+
+// Switches between the English word and its German translation.
+function revealFlashcard() {
+	if (flashcards.length === 0) {
+		return;
+	}
+
+	isTranslationShown = !isTranslationShown;
+	showCurrentCard();
+}
+
+flashcard.addEventListener("click", revealFlashcard);
+
 showWordPairs();
+showCurrentCard();
