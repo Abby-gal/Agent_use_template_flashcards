@@ -32,6 +32,13 @@
                 <label for="activity-date">Date</label>
                 <input type="date" id="activity-date" name="activityDate" required>
 
+                <label for="additional-date">Additional dates (optional)</label>
+                <div class="additional-date-controls">
+                    <input type="date" id="additional-date" name="additionalDate">
+                    <button type="button" id="add-additional-date">Add date</button>
+                </div>
+                <ul id="additional-date-list" aria-live="polite"></ul>
+
                 <label for="planned-start">Planned start</label>
                 <input type="time" id="planned-start" name="plannedStart" required>
 

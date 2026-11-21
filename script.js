@@ -43,6 +43,52 @@ function getCurrentWeekValue() {
     return date.getFullYear() + "-W" + String(weekNumber).padStart(2, "0");
 }
 
+let additionalActivityDates = [];
+
+// Add the date picker value to the optional dates list.
+function addAdditionalDate() {
+    const dateInput = document.getElementById("additional-date");
+    const date = dateInput.value;
+    if (date === "" || additionalActivityDates.includes(date)) {
+        return;
+    }
+
+    additionalActivityDates.push(date);
+    dateInput.value = "";
+    renderAdditionalDates();
+}
+
+// Remove a date from the optional dates list.
+function removeAdditionalDate(dateToRemove) {
+    additionalActivityDates = additionalActivityDates.filter(function(date) {
+        return date !== dateToRemove;
+    });
+    renderAdditionalDates();
+}
+
+// Show the selected optional dates with a remove button for each one.
+function renderAdditionalDates() {
+    const dateList = document.getElementById("additional-date-list");
+    dateList.textContent = "";
+    additionalActivityDates.forEach(function(date) {
+        const item = document.createElement("li");
+        item.textContent = dateFromString(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.setAttribute("aria-label", "Remove " + date);
+        removeButton.addEventListener("click", function() {
+            removeAdditionalDate(date);
+        });
+        item.appendChild(removeButton);
+        dateList.appendChild(item);
+    });
+}
+
 // Add a valid activity to local storage and reset the form.
 function handleActivitySubmit(event) {
     event.preventDefault();
@@ -71,17 +117,28 @@ function handleActivitySubmit(event) {
     }
 
     let activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
-    activities.push({
-        name: name,
-        category: category,
-        date: date,
-        plannedStart: plannedStart,
-        plannedEnd: plannedEnd
+    const activityDates = [date];
+    additionalActivityDates.forEach(function(additionalDate) {
+        if (additionalDate !== date) {
+            activityDates.push(additionalDate);
+        }
+    });
+    activityDates.forEach(function(activityDate) {
+        activities.push({
+            name: name,
+            category: category,
+            date: activityDate,
+            plannedStart: plannedStart,
+            plannedEnd: plannedEnd
+        });
     });
     localStorage.setItem("lifeBalanceActivities", JSON.stringify(activities));
 
-    message.textContent = "Activity added for " + date + ".";
+    message.textContent = "Activity added for " + activityDates.length +
+        (activityDates.length === 1 ? " date." : " dates.");
+    additionalActivityDates = [];
     document.getElementById("activity-form").reset();
+    renderAdditionalDates();
     renderTimetable();
 }
 
@@ -311,13 +368,16 @@ function renderTimetable() {
 function startPlanner() {
     const activityForm = document.getElementById("activity-form");
     const selectedWeek = document.getElementById("selected-week");
+    const addDateButton = document.getElementById("add-additional-date");
 
     if (selectedWeek.value === "") {
         selectedWeek.value = getCurrentWeekValue();
     }
 
     activityForm.addEventListener("submit", handleActivitySubmit);
+    addDateButton.addEventListener("click", addAdditionalDate);
     selectedWeek.addEventListener("change", renderTimetable);
+    renderAdditionalDates();
     renderTimetable();
 }
 
