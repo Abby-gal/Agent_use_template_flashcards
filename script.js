@@ -173,12 +173,74 @@ function handleActivitySubmit(event) {
     });
     localStorage.setItem("lifeBalanceActivities", JSON.stringify(activities));
 
+    // Add the submitted activity details to the recent activities list.
+    saveRecentActivity(name, category, plannedStart, plannedEnd);
+
     message.textContent = "Activity added for " + activityDates.length +
         (activityDates.length === 1 ? " date." : " dates.");
     additionalActivityDates = [];
     document.getElementById("activity-form").reset();
     renderAdditionalDates();
     renderTimetable();
+}
+
+// Add the submitted activity details to the recent activities list.
+function saveRecentActivity(name, category, plannedStart, plannedEnd) {
+    let recentActivities = JSON.parse(localStorage.getItem("lifeBalanceRecentActivities") || "[]");
+    const recentActivity = {
+        name: name,
+        category: category,
+        plannedStart: plannedStart,
+        plannedEnd: plannedEnd
+    };
+
+    recentActivities = recentActivities.filter(function(activity) {
+        return activity.name !== name || activity.category !== category ||
+            activity.plannedStart !== plannedStart || activity.plannedEnd !== plannedEnd;
+    });
+    recentActivities.unshift(recentActivity);
+
+    if (recentActivities.length > 10) {
+        recentActivities = recentActivities.slice(0, 10);
+    }
+    localStorage.setItem("lifeBalanceRecentActivities", JSON.stringify(recentActivities));
+    renderRecentActivities();
+}
+
+// Show saved recent activities in the selection list.
+function renderRecentActivities() {
+    const recentSelect = document.getElementById("recent-activity");
+    const recentActivities = JSON.parse(localStorage.getItem("lifeBalanceRecentActivities") || "[]");
+
+    recentSelect.textContent = "";
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select recent activity";
+    recentSelect.appendChild(defaultOption);
+
+    recentActivities.forEach(function(activity, activityIndex) {
+        const option = document.createElement("option");
+        option.value = activityIndex;
+        option.textContent = activity.name + " - " + activity.category + " (" +
+            activity.plannedStart + "-" + activity.plannedEnd + ")";
+        recentSelect.appendChild(option);
+    });
+}
+
+// Fill the activity form with a selected recent activity.
+function useRecentActivity() {
+    const recentSelect = document.getElementById("recent-activity");
+    if (recentSelect.value === "") {
+        return;
+    }
+
+    const recentActivities = JSON.parse(localStorage.getItem("lifeBalanceRecentActivities") || "[]");
+    const activity = recentActivities[Number(recentSelect.value)];
+
+    document.getElementById("activity-name").value = activity.name;
+    document.getElementById("activity-category").value = activity.category;
+    document.getElementById("planned-start").value = activity.plannedStart;
+    document.getElementById("planned-end").value = activity.plannedEnd;
 }
 
 // Remove an activity from local storage using its position in the saved list.
@@ -550,6 +612,7 @@ function startPlanner() {
     const targetsForm = document.getElementById("targets-form");
     const selectedWeek = document.getElementById("selected-week");
     const addDateButton = document.getElementById("add-additional-date");
+    const recentSelect = document.getElementById("recent-activity");
 
     if (selectedWeek.value === "") {
         selectedWeek.value = getCurrentWeekValue();
@@ -559,8 +622,9 @@ function startPlanner() {
     targetsForm.addEventListener("submit", handleTargetsSubmit);
     addDateButton.addEventListener("click", addAdditionalDate);
     selectedWeek.addEventListener("change", renderTimetable);
+    recentSelect.addEventListener("change", useRecentActivity);
     loadWeeklyTargets();
-    renderAdditionalDates();
+    renderRecentActivities();
     renderTimetable();
 }
 
