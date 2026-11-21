@@ -125,6 +125,7 @@ function handleTargetsSubmit(event) {
     document.getElementById("exercise-goal").value = targets.exerciseGoal;
     document.getElementById("rest-minimum").value = targets.restMinimum;
     document.getElementById("targets-message").textContent = "Targets saved";
+    renderWarnings();
 }
 
 // Add a valid activity to local storage and reset the form.
@@ -212,6 +213,7 @@ function handleActualSubmit(event, activityIndex) {
 
     document.getElementById("actual-message-" + activityIndex).textContent = "Actual times saved.";
     renderHoursSummary();
+    renderWarnings();
 }
 
 // Add planned and actual minutes for matching activities to a category total.
@@ -261,6 +263,144 @@ function addHoursSummaryRow(tableBody, category, activities, firstDate, lastDate
         row.appendChild(cell);
     });
     tableBody.appendChild(row);
+}
+
+// Find planned and actual weekly totals for the selected categories.
+function getWarningTotals(activities, firstDate, lastDate) {
+    const totals = {
+        workPlanned: 0,
+        workActual: 0,
+        responsibilityPlanned: 0,
+        responsibilityActual: 0,
+        restPlanned: 0
+    };
+
+    activities.forEach(function(activity) {
+        if (activity.date < firstDate || activity.date > lastDate) {
+            return;
+        }
+
+        const plannedMinutes = timeToMinutes(activity.plannedEnd) - timeToMinutes(activity.plannedStart);
+        let actualMinutes = 0;
+        if (activity.actualStart && activity.actualEnd) {
+            actualMinutes = timeToMinutes(activity.actualEnd) - timeToMinutes(activity.actualStart);
+        }
+
+        if (activity.category === "work") {
+            totals.workPlanned += plannedMinutes;
+            totals.workActual += actualMinutes;
+        }
+        if (activity.category === "work" || activity.category === "study" || activity.category === "church") {
+            totals.responsibilityPlanned += plannedMinutes;
+            totals.responsibilityActual += actualMinutes;
+        }
+        if (activity.category === "personal") {
+            totals.restPlanned += plannedMinutes;
+        }
+    });
+
+    return totals;
+}
+
+// Add a warning message to the warnings section.
+function addWarning(warnings, message) {
+    const warning = document.createElement("p");
+    warning.textContent = message;
+    warnings.appendChild(warning);
+}
+
+// Show conflicts and weekly target warnings for the selected week.
+function renderWarnings() {
+    const selectedWeek = document.getElementById("selected-week");
+    const warnings = document.getElementById("warnings");
+    warnings.textContent = "";
+
+    if (selectedWeek.value === "") {
+        addWarning(warnings, "Select a week to see warnings.");
+        return;
+    }
+
+    const monday = getMondayForWeek(selectedWeek.value);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const firstDate = dateToString(monday);
+    const lastDate = dateToString(sunday);
+    const activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    const weekActivities = activities.filter(function(activity) {
+        return activity.date >= firstDate && activity.date <= lastDate;
+    });
+
+    let warningCount = 0;
+
+    for (let firstIndex = 0; firstIndex < weekActivities.length; firstIndex++) {
+        const firstActivity = weekActivities[firstIndex];
+        for (let secondIndex = firstIndex + 1; secondIndex < weekActivities.length; secondIndex++) {
+            const secondActivity = weekActivities[secondIndex];
+            const overlapsDate = firstActivity.date === secondActivity.date;
+            const firstStart = timeToMinutes(firstActivity.plannedStart);
+            const firstEnd = timeToMinutes(firstActivity.plannedEnd);
+            const secondStart = timeToMinutes(secondActivity.plannedStart);
+            const secondEnd = timeToMinutes(secondActivity.plannedEnd);
+            const overlapsTime = firstStart < secondEnd && secondStart < firstEnd;
+
+            if (overlapsDate && overlapsTime) {
+                const firstLabel = firstActivity.category.charAt(0).toUpperCase() + firstActivity.category.slice(1);
+                const secondLabel = secondActivity.category.charAt(0).toUpperCase() + secondActivity.category.slice(1);
+                addWarning(warnings, firstLabel + " activity overlaps " + secondLabel + " activity on " +
+                    dateFromString(firstActivity.date).toLocaleDateString("en-US") + ".");
+                warningCount++;
+            }
+        }
+    }
+
+    const targets = JSON.parse(localStorage.getItem("lifeBalanceTargets") || "{}");
+    const totals = getWarningTotals(weekActivities, firstDate, lastDate);
+
+    if (targets.workLimit !== undefined && targets.workLimit !== "") {
+        const workLimit = Number(targets.workLimit);
+        const plannedOver = (totals.workPlanned / 60) - workLimit;
+        const actualOver = (totals.workActual / 60) - workLimit;
+        if (plannedOver > 0) {
+            addWarning(warnings, "Planned work hours are " + plannedOver.toFixed(1) + " hours over the " +
+                workLimit + " hour maximum.");
+            warningCount++;
+        }
+        if (actualOver > 0) {
+            addWarning(warnings, "Actual work hours are " + actualOver.toFixed(1) + " hours over the " +
+                workLimit + " hour maximum.");
+            warningCount++;
+        }
+    }
+
+    if (targets.responsibilityLimit !== undefined && targets.responsibilityLimit !== "") {
+        const responsibilityLimit = Number(targets.responsibilityLimit);
+        const plannedOver = (totals.responsibilityPlanned / 60) - responsibilityLimit;
+        const actualOver = (totals.responsibilityActual / 60) - responsibilityLimit;
+        if (plannedOver > 0) {
+            addWarning(warnings, "Planned work, study and church hours are " + plannedOver.toFixed(1) +
+                " hours over the " + responsibilityLimit + " hour maximum.");
+            warningCount++;
+        }
+        if (actualOver > 0) {
+            addWarning(warnings, "Actual work, study and church hours are " + actualOver.toFixed(1) +
+                " hours over the " + responsibilityLimit + " hour maximum.");
+            warningCount++;
+        }
+    }
+
+    if (targets.restMinimum !== undefined && targets.restMinimum !== "") {
+        const restMinimum = Number(targets.restMinimum);
+        const restShort = restMinimum - (totals.restPlanned / 60);
+        if (restShort > 0) {
+            addWarning(warnings, "Planned personal or rest time is " + restShort.toFixed(1) +
+                " hours short of the " + restMinimum + " hour minimum.");
+            warningCount++;
+        }
+    }
+
+    if (warningCount === 0) {
+        addWarning(warnings, "No warnings for this week.");
+    }
 }
 
 // Render planned and recorded hours for each category in the selected week.
@@ -392,6 +532,7 @@ function renderTimetable() {
 
     if (selectedWeek.value === "") {
         timetable.textContent = "Select a week to see activities.";
+        renderWarnings();
         return;
     }
 
@@ -400,6 +541,7 @@ function renderTimetable() {
     for (let day = 0; day < 7; day++) {
         renderDay(day, monday, timetable);
     }
+    renderWarnings();
 }
 
 // Start the planner application after the page has loaded.
