@@ -116,6 +116,87 @@ function handleActualSubmit(event, activityIndex) {
     localStorage.setItem("lifeBalanceActivities", JSON.stringify(activities));
 
     document.getElementById("actual-message-" + activityIndex).textContent = "Actual times saved.";
+    renderHoursSummary();
+}
+
+// Add planned and actual minutes for matching activities to a category total.
+function addActivityHours(activity, category, firstDate, lastDate, totals) {
+    if (activity.category !== category || activity.date < firstDate || activity.date > lastDate) {
+        return;
+    }
+
+    totals.planned += timeToMinutes(activity.plannedEnd) - timeToMinutes(activity.plannedStart);
+    if (activity.actualStart && activity.actualEnd) {
+        totals.actual += timeToMinutes(activity.actualEnd) - timeToMinutes(activity.actualStart);
+    }
+}
+
+// Create the table headings for the weekly hours summary.
+function createHoursSummaryTable() {
+    const table = document.createElement("table");
+    const tableHead = document.createElement("thead");
+    const headingRow = document.createElement("tr");
+
+    ["Category", "Planned", "Actual"].forEach(function(label) {
+        const heading = document.createElement("th");
+        heading.textContent = label;
+        heading.scope = "col";
+        headingRow.appendChild(heading);
+    });
+    tableHead.appendChild(headingRow);
+    table.appendChild(tableHead);
+    return table;
+}
+
+// Add one category's planned and actual totals to the summary table.
+function addHoursSummaryRow(tableBody, category, activities, firstDate, lastDate) {
+    const totals = { planned: 0, actual: 0 };
+    activities.forEach(function(activity) {
+        addActivityHours(activity, category.value, firstDate, lastDate, totals);
+    });
+
+    const row = document.createElement("tr");
+    const categoryCell = document.createElement("th");
+    categoryCell.scope = "row";
+    categoryCell.textContent = category.label;
+    row.appendChild(categoryCell);
+    [totals.planned, totals.actual].forEach(function(minutes) {
+        const cell = document.createElement("td");
+        cell.textContent = Number((minutes / 60).toFixed(2)) + " h";
+        row.appendChild(cell);
+    });
+    tableBody.appendChild(row);
+}
+
+// Render planned and recorded hours for each category in the selected week.
+function renderHoursSummary() {
+    const selectedWeek = document.getElementById("selected-week");
+    const summary = document.getElementById("hours-summary");
+    summary.textContent = "";
+    if (selectedWeek.value === "") {
+        summary.textContent = "Select a week to see hours.";
+        return;
+    }
+
+    const categories = [
+        { value: "work", label: "Work" },
+        { value: "study", label: "Study" },
+        { value: "church", label: "Church" },
+        { value: "exercise", label: "Exercise" },
+        { value: "personal", label: "Personal/Rest" }
+    ];
+    const monday = getMondayForWeek(selectedWeek.value);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    const table = createHoursSummaryTable();
+    const tableBody = document.createElement("tbody");
+
+    categories.forEach(function(category) {
+        addHoursSummaryRow(tableBody, category, activities, dateToString(monday), dateToString(sunday));
+    });
+    table.appendChild(tableBody);
+    summary.appendChild(table);
 }
 
 // Render one day's activities inside the weekly timetable.
@@ -212,6 +293,7 @@ function renderTimetable() {
     const selectedWeek = document.getElementById("selected-week");
     const timetable = document.getElementById("timetable");
     timetable.textContent = "";
+    renderHoursSummary();
 
     if (selectedWeek.value === "") {
         timetable.textContent = "Select a week to see activities.";

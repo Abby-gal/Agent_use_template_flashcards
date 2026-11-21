@@ -14,8 +14,9 @@ F2. Select a week and see its activities in a timetable with colour and text lab
 F3. Delete an activity from the timetable.
 F4. Record actual start and end times for an activity after it happens.
 F5. Compare planned and actual weekly hours for each category and see progress toward my exercise goal.
-F6. Set a maximum for work hours, a combined maximum for work, study, and church, an exercise goal, and a minimum for planned personal or rest time.
-F7. Show a warning when activities overlap, when planned or actual hours exceed a maximum, or when planned rest falls below my minimum.
+Feature F6. Let me select additional dates in the Add activity form and reuse the same name, category, and planned times on all selected dates.
+F7. Set a maximum for work hours, a combined maximum for work, study, and church, an exercise goal, and a minimum for planned personal or rest time.
+F8. Show a warning when activities overlap, when planned or actual hours exceed a maximum, or when planned rest falls below my minimum.
 
 ## Acceptance criteria (how I know a feature works)
 F1. Adding a valid activity puts it on the correct date. Leaving a required field blank or entering an end time before the start time prevents submission.
@@ -23,8 +24,9 @@ F2. Changing the selected week shows the activities for that week. Each activity
 F3. Deleting an activity removes it from the timetable and updates the weekly totals.
 F4. Recording 09:15 to 10:45 for a planned 09:00 to 11:00 activity keeps the planned times and records 1.5 actual hours.
 F5. A category with 2 planned hours and 1.5 actual hours shows both totals. With a 3-hour exercise goal, 1.5 actual exercise hours shows 50% progress.
-F6. I can enter all four weekly targets, and changing a target updates the summary and warnings.
-F7. If I record 30 work hours against a 25-hour limit, the warning says I am 5 hours over. A study session that overlaps a church activity triggers a conflict warning. Planning 3 hours of rest with a 5-hour minimum shows that I am 2 hours short.
+F6. If I enter a Work shift from 09:00 to 17:00 and select three different dates, submitting the form creates one 8-hour shift on each date. If I leave the additional dates empty, the form creates one shift on the original date
+F7. I can enter all four weekly targets, and changing a target updates the summary and warnings.
+F8. If I record 30 work hours against a 25-hour limit, the warning says I am 5 hours over. A study session that overlaps a church activity triggers a conflict warning. Planning 3 hours of rest with a 5-hour minimum shows that I am 2 hours short.
 
 
 ## Out of scope (do NOT build)

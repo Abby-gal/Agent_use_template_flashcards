@@ -130,6 +130,22 @@ button {
     border: 1px dashed #bbc5ce;
 }
 
+#hours-summary table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#hours-summary th,
+#hours-summary td {
+    padding: 8px;
+    border-bottom: 1px solid #d8dee4;
+}
+
+#hours-summary thead th {
+    background-color: #f5f7fa;
+}
+
 #activity-message {
     min-height: 20px;
     color: #3a4a5a;
