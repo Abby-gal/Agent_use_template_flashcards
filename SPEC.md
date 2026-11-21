@@ -17,6 +17,7 @@ F5. Compare planned and actual weekly hours for each category and see progress t
 F6. Let me select additional dates in the Add activity form and reuse the same name, category, and planned times on all selected dates.
 F7. Let me set a weekly work maximum, a combined maximum for work, study, and church, an exercise goal, and a minimum for planned personal or rest time. Save these targets in the browser when I click Update targets.
 F8. Show a warning when activities overlap, when planned or actual hours exceed a maximum, or when planned rest falls below my minimum.
+F9. Remember recently added activities in the browser and let me reuse their name, category, and planned times.
 
 ## Acceptance criteria (how I know a feature works)
 F1. Adding a valid activity puts it on the correct date. Leaving a required field blank or entering an end time before the start time prevents submission.
@@ -27,6 +28,7 @@ F5. A category with 2 planned hours and 1.5 actual hours shows both totals. With
 F6. If I enter a Work shift from 09:00 to 17:00 and select three different dates, submitting the form creates one 8-hour shift on each date. If I leave the additional dates empty, the form creates one shift on the original date
 F7. If I enter 25, 50, 3, and 5 hours and click Update targets, all four values are still in the fields after I reload. The same targets apply when I switch to another week.
 F8. If I record 30 work hours against a 25-hour limit, the warning says I am 5 hours over. A study session that overlaps a church activity triggers a conflict warning. Planning 3 hours of rest with a 5-hour minimum shows that I am 2 hours short.
+F9. After I add a Work shift and reload the page, it appears in Recent activities. Selecting it fills in the name, category, and planned times. I can choose a new date and submit it as a separate activity. Actual times start blank.
 
 
 ## Out of scope (do NOT build)
