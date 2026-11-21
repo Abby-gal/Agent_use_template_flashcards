@@ -278,6 +278,25 @@ function handleActualSubmit(event, activityIndex) {
     renderWarnings();
 }
 
+// Copy planned times into actual fields and save them when requested.
+function handleCompletedAsPlanned(event, activityIndex) {
+    let activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    const activity = activities[activityIndex];
+    const savedTimesAreDifferent = activity.actualStart && activity.actualEnd &&
+        (activity.actualStart !== activity.plannedStart || activity.actualEnd !== activity.plannedEnd);
+
+    if (savedTimesAreDifferent) {
+        const replaceTimes = window.confirm("Different actual times are already saved. Replace them with the planned times?");
+        if (!replaceTimes) {
+            return;
+        }
+    }
+
+    document.getElementById("actual-start-" + activityIndex).value = activity.plannedStart;
+    document.getElementById("actual-end-" + activityIndex).value = activity.plannedEnd;
+    handleActualSubmit(event, activityIndex);
+}
+
 // Add planned and actual minutes for matching activities to a category total.
 function addActivityHours(activity, category, firstDate, lastDate, totals) {
     if (activity.category !== category || activity.date < firstDate || activity.date > lastDate) {
@@ -573,12 +592,25 @@ function renderDay(day, monday, timetable) {
             handleActualSubmit(event, activityIndex);
         });
 
+        const completedButton = document.createElement("button");
+        completedButton.type = "button";
+        completedButton.className = "completed-as-planned";
+        completedButton.textContent = "Completed as planned";
+        completedButton.addEventListener("click", function(event) {
+            handleCompletedAsPlanned(event, activityIndex);
+        });
+
+        const actualButtons = document.createElement("div");
+        actualButtons.className = "actual-buttons";
+        actualButtons.appendChild(actualSubmitButton);
+        actualButtons.appendChild(completedButton);
+
         activityElement.appendChild(activityText);
         activityElement.appendChild(deleteButton);
         activityElement.appendChild(actualStartInput);
         activityElement.appendChild(actualEndInput);
         activityElement.appendChild(actualMessage);
-        activityElement.appendChild(actualSubmitButton);
+        activityElement.appendChild(actualButtons);
         dayElement.appendChild(activityElement);
     });
 

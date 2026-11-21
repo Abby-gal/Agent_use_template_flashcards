@@ -12,7 +12,7 @@ I want to plan my week across work, study, church, exercise, and personal or res
 F1. Add an activity with a name, category, date, and planned start and end times.
 F2. Select a week and see its activities in a timetable with colour and text labels for each category.
 F3. Delete an activity from the timetable.
-F4. Record actual start and end times for an activity after it happens.
+F4. Record actual start and end times for an activity after it happens. Let me confirm that an activity happened as planned with one click.
 F5. Compare planned and actual weekly hours for each category and see progress toward my exercise goal.
 F6. Let me select additional dates in the Add activity form and reuse the same name, category, and planned times on all selected dates.
 F7. Let me set a weekly work maximum, a combined maximum for work, study, and church, an exercise goal, and a minimum for planned personal or rest time. Save these targets in the browser when I click Update targets.
@@ -23,7 +23,7 @@ F9. Remember recently added activities in the browser and let me reuse their nam
 F1. Adding a valid activity puts it on the correct date. Leaving a required field blank or entering an end time before the start time prevents submission.
 F2. Changing the selected week shows the activities for that week. Each activity has a category label, and unused slots stay open.
 F3. Deleting an activity removes it from the timetable and updates the weekly totals.
-F4. Recording 09:15 to 10:45 for a planned 09:00 to 11:00 activity keeps the planned times and records 1.5 actual hours.
+F4. Recording 09:15 to 10:45 for a planned 09:00 to 11:00 activity keeps the planned times and records 1.5 actual hours. For an activity planned from 20:00 to 21:00, clicking Completed as planned saves those same actual times and adds one hour to the actual total for its category. If I’ve already saved different actual times, ask before replacing them.
 F5. A category with 2 planned hours and 1.5 actual hours shows both totals. With a 3-hour exercise goal, 1.5 actual exercise hours shows 50% progress.
 F6. If I enter a Work shift from 09:00 to 17:00 and select three different dates, submitting the form creates one 8-hour shift on each date. If I leave the additional dates empty, the form creates one shift on the original date
 F7. If I enter 25, 50, 3, and 5 hours and click Update targets, all four values are still in the fields after I reload. The same targets apply when I switch to another week.

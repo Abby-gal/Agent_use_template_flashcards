@@ -179,8 +179,15 @@ button {
     margin-top: 6px;
 }
 
-.submit-actual-times {
+.actual-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: 6px;
+}
+
+.submit-actual-times,
+.completed-as-planned {
     padding: 4px 8px;
     font-size: 12px;
 }
