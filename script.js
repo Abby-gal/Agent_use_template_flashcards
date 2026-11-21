@@ -89,6 +89,44 @@ function renderAdditionalDates() {
     });
 }
 
+// Load saved weekly targets into the target fields.
+function loadWeeklyTargets() {
+    const targets = JSON.parse(localStorage.getItem("lifeBalanceTargets") || "{}");
+
+    if (targets.workLimit !== undefined) {
+        document.getElementById("work-limit").value = targets.workLimit;
+    }
+    if (targets.responsibilityLimit !== undefined) {
+        document.getElementById("responsibility-limit").value = targets.responsibilityLimit;
+    }
+    if (targets.exerciseGoal !== undefined) {
+        document.getElementById("exercise-goal").value = targets.exerciseGoal;
+    }
+    if (targets.restMinimum !== undefined) {
+        document.getElementById("rest-minimum").value = targets.restMinimum;
+    }
+}
+
+// Save the four weekly target values in local storage.
+function handleTargetsSubmit(event) {
+    event.preventDefault();
+
+    const targets = {
+        workLimit: document.getElementById("work-limit").value,
+        responsibilityLimit: document.getElementById("responsibility-limit").value,
+        exerciseGoal: document.getElementById("exercise-goal").value,
+        restMinimum: document.getElementById("rest-minimum").value
+    };
+
+    localStorage.setItem("lifeBalanceTargets", JSON.stringify(targets));
+
+    document.getElementById("work-limit").value = targets.workLimit;
+    document.getElementById("responsibility-limit").value = targets.responsibilityLimit;
+    document.getElementById("exercise-goal").value = targets.exerciseGoal;
+    document.getElementById("rest-minimum").value = targets.restMinimum;
+    document.getElementById("targets-message").textContent = "Targets saved";
+}
+
 // Add a valid activity to local storage and reset the form.
 function handleActivitySubmit(event) {
     event.preventDefault();
@@ -367,6 +405,7 @@ function renderTimetable() {
 // Start the planner application after the page has loaded.
 function startPlanner() {
     const activityForm = document.getElementById("activity-form");
+    const targetsForm = document.getElementById("targets-form");
     const selectedWeek = document.getElementById("selected-week");
     const addDateButton = document.getElementById("add-additional-date");
 
@@ -375,8 +414,10 @@ function startPlanner() {
     }
 
     activityForm.addEventListener("submit", handleActivitySubmit);
+    targetsForm.addEventListener("submit", handleTargetsSubmit);
     addDateButton.addEventListener("click", addAdditionalDate);
     selectedWeek.addEventListener("change", renderTimetable);
+    loadWeeklyTargets();
     renderAdditionalDates();
     renderTimetable();
 }
