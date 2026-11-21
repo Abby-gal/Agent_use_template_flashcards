@@ -125,6 +125,7 @@ function handleTargetsSubmit(event) {
     document.getElementById("exercise-goal").value = targets.exerciseGoal;
     document.getElementById("rest-minimum").value = targets.restMinimum;
     document.getElementById("targets-message").textContent = "Targets saved";
+    renderHoursSummary();
     renderWarnings();
 }
 
@@ -513,6 +514,35 @@ function renderHoursSummary() {
     });
     table.appendChild(tableBody);
     summary.appendChild(table);
+    renderExerciseProgress(monday, sunday);
+}
+
+// Show exercise progress for the selected week.
+function renderExerciseProgress(monday, sunday) {
+    const summary = document.getElementById("hours-summary");
+    const targets = JSON.parse(localStorage.getItem("lifeBalanceTargets") || "{}");
+    const activities = JSON.parse(localStorage.getItem("lifeBalanceActivities") || "[]");
+    let actualMinutes = 0;
+
+    activities.forEach(function(activity) {
+        if (activity.category === "exercise" && activity.date >= dateToString(monday) &&
+            activity.date <= dateToString(sunday) && activity.actualStart && activity.actualEnd) {
+            actualMinutes += timeToMinutes(activity.actualEnd) - timeToMinutes(activity.actualStart);
+        }
+    });
+
+    const actualHours = actualMinutes / 60;
+    const goalHours = targets.exerciseGoal === undefined || targets.exerciseGoal === "" ? 0 : Number(targets.exerciseGoal);
+    let percentage = 0;
+    if (goalHours > 0) {
+        percentage = Math.round((actualHours / goalHours) * 100);
+    }
+
+    const progress = document.createElement("p");
+    progress.className = "exercise-progress";
+    progress.textContent = "Exercise goal: " + Number(actualHours.toFixed(2)) + " of " +
+        Number(goalHours) + " hours (" + percentage + "%).";
+    summary.appendChild(progress);
 }
 
 // Render one day's activities inside the weekly timetable.

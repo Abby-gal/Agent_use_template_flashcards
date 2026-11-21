@@ -82,7 +82,7 @@ button {
 
 #timetable {
     display: grid;
-    grid-template-columns: repeat(7, minmax(120px, 1fr));
+    grid-template-columns: repeat(7, 160px);
     gap: 8px;
     overflow-x: auto;
 }
@@ -196,4 +196,9 @@ button {
     min-height: 16px;
     margin-top: 4px;
     color: #3a4a5a;
+}
+
+.exercise-progress {
+    margin: 12px 0 0;
+    font-weight: bold;
 }
